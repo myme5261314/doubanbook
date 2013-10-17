@@ -179,6 +179,7 @@ class Douban(threading.Thread):
         except Exception as e:
             print self.id, e
             print '------------------------------Retry %d ------------------------' % self.id
+            lock.release()
             grab(self.id)
             return
         try:
