@@ -15,14 +15,14 @@ end_id = 5000000
 grabbing = True
 lock = threading.Lock()
 conn = MySQLdb.connect(host='localhost', port=3306, user='root',
-                       passwd='5261314', charset='utf8')
+                       passwd='', charset='utf8')
 cur = conn.cursor()
 
 cur.execute("SET NAMES utf8")
-# cur.execute("SET CHARACTER_SET_CLIENT=utf8")
-# cur.execute("SET CHARACTER_SET_DATABASE=utf8")
-# cur.execute("SET CHARACTER_SET_SERVER=utf8")
-# cur.execute("SET CHARACTER_SET_RESULTS=utf8")
+cur.execute("SET CHARACTER_SET_CLIENT=utf8")
+cur.execute("SET CHARACTER_SET_DATABASE=utf8")
+cur.execute("SET CHARACTER_SET_SERVER=utf8")
+cur.execute("SET CHARACTER_SET_RESULTS=utf8")
 conn.commit()
 
 cur.execute('create database if not exists douban_book CHARACTER SET `utf8` \
