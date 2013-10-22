@@ -132,7 +132,13 @@ class Douban(threading.Thread):
             meta = json.loads(jsn)
             if not meta.has_key('code'):
 #                 jsn = jsn.replace("'", "\\'")
-                book = Book(meta)
+                try:
+                    book = Book(meta)
+                except UnicodeError as e:
+                    print self.id, e
+                    print '----------invalid characters occur, drop this quest.'
+                    grab(ranges.next())
+                    return
                 lock.acquire()
                 sql = insert_template % (tb,
                      self.id, book.isbn10, book.isbn13,
@@ -179,7 +185,6 @@ class Douban(threading.Thread):
         except Exception as e:
             print self.id, e
             print '------------------------------Retry %d ------------------------' % self.id
-            lock.release()
             grab(self.id)
             return
         try:
