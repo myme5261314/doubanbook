@@ -129,16 +129,16 @@ class Douban(threading.Thread):
         url = 'https://api.douban.com/v2/book/%s' % self.id
         try:
             jsn = urllib.urlopen(url).read()
-            meta = json.loads(jsn)
+            try:
+                meta = json.loads(jsn)
+            except UnicodeError as e:
+                print self.id, e
+                print '----------invalid characters occur, drop this quest.'
+                grab(ranges.next())
+                return
             if not meta.has_key('code'):
 #                 jsn = jsn.replace("'", "\\'")
-                try:
-                    book = Book(meta)
-                except UnicodeError as e:
-                    print self.id, e
-                    print '----------invalid characters occur, drop this quest.'
-                    grab(ranges.next())
-                    return
+                book = Book(meta)
                 lock.acquire()
                 sql = insert_template % (tb,
                      self.id, book.isbn10, book.isbn13,
