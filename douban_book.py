@@ -40,7 +40,8 @@ insert_template = '''insert into `%s` values(
 '%s','%s', '%s', '%s'
 )'''
 
-blocks = 200
+# the threads number of a script.
+blocks = 100
 blocks_write = 5*blocks
 initial_blocks = 3*blocks_write
 blocks_starttime = datetime.datetime.now()

@@ -17,16 +17,13 @@ begin
             set start_id = start_id + 999999;
         end if;
         set @tb = concat('book_',concat(start_id),'_',concat(end_id));
-        select @tb;
         if i = 19 then
             set @execsql = concat(@execsql,' select count(id) from ',@tb,';');
         else
             set @execsql = concat(@execsql,' select count(id) from ',@tb,' union all');
         end if;
-        select @execsql;
         set i = i +1;
     end while;
-    select @execsql;
     PREPARE stmt FROM @execsql;
     EXECUTE stmt;
 end $$
