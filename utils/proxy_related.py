@@ -29,15 +29,10 @@ def get_proxy_list():
         for entry in soup.find_all(['tr'])[1:]:
             info_list = entry.find_all(['td'])
             info_list = [info.text for info in info_list]
-            data_dict = dict()
-            data_dict['ip'] = info_list[0]
-            data_dict['port'] = info_list[1]
-            data_dict['anonymity'] = info_list[2]
-            data_dict['types'] = info_list[3]
-            data_dict['get_post'] = info_list[4]
-            data_dict['position'] = info_list[5]
-            data_dict['response_time'] = info_list[6]
-            data_dict['verify_time'] = info_list[7]
+            key_list = ['ip', 'port', 'anonymity', 'types',
+                        'get_post', 'position', 'response_time', 'verify_time']
+            data_dict = dict([(key_list[i], info_list[i])
+                              for i in xrange(len(key_list))])
             proxies.append(ProxyServer.ProxyServer(data_dict))
     return proxies
 
