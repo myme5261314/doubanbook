@@ -13,8 +13,28 @@ This file contains utility functions about proxy server.
 import requests as rs
 from bs4 import BeautifulSoup as bs
 from class_type import ProxyServer
-
+import pycurl
+from StringIO import StringIO
 base_url = 'http://www.kuaidaili.com/proxylist/'
+
+
+def get_by_ss(url):
+    """get url content using shadowsocks proxy.
+
+    :url: the url to be fetched.
+    :returns: TODO
+
+    """
+    buffer = StringIO()
+    c1 = pycurl.Curl()
+    c1.setopt(c1.URL, 'http://pachong.org/high.html')
+    c1.setopt(c1.PROXY, 'localhost')
+    c1.setopt(c1.PROXYPORT, 1080)
+    c1.setopt(c1.PROXYTYPE, pycurl.PROXYTYPE_SOCKS5)
+    c1.setopt(c1.WRITEDATA, buffer)
+    c1.perform()
+
+    return buffer.getvalue()
 
 
 def get_proxy_list():
@@ -42,7 +62,22 @@ def main():
     :returns: TODO
 
     """
-    print map(str, get_proxy_list())
+    proxy_list = map(str, get_proxy_list())
+    print proxy_list
+    for proxy in proxy_list:
+        print proxy
+        try:
+            soup = bs(
+                rs.get(
+                    'http://www.baidu.com',
+                    proxies={
+                        'http': proxy}, timeout=5).text,
+                    'html.parser')
+        except rs.exceptions.Timeout:
+            print "Failed"
+            continue
+        print soup.h1.text
+        print "Success"
 
 if __name__ == "__main__":
     main()
