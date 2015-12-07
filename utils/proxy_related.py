@@ -13,9 +13,9 @@ This file contains utility functions about proxy server.
 import requests as rs
 from bs4 import BeautifulSoup as bs
 from class_type import ProxyServer
-import pycurl
-from StringIO import StringIO
+
 base_url = 'http://www.kuaidaili.com/proxylist/'
+# base_url = 'http://pachong.org/high.html'
 
 
 def get_by_ss(url):
@@ -25,16 +25,8 @@ def get_by_ss(url):
     :returns: TODO
 
     """
-    buffer = StringIO()
-    c1 = pycurl.Curl()
-    c1.setopt(c1.URL, 'http://pachong.org/high.html')
-    c1.setopt(c1.PROXY, 'localhost')
-    c1.setopt(c1.PROXYPORT, 1080)
-    c1.setopt(c1.PROXYTYPE, pycurl.PROXYTYPE_SOCKS5)
-    c1.setopt(c1.WRITEDATA, buffer)
-    c1.perform()
-
-    return buffer.getvalue()
+    return bs(rs.get(url, timeout=5, proxies={'http': 'http://localhost:8118'}),
+              'html.parser')
 
 
 def get_proxy_list():
@@ -62,8 +54,9 @@ def main():
     :returns: TODO
 
     """
+    success_times = 0
     proxy_list = map(str, get_proxy_list())
-    print proxy_list
+    print len(proxy_list)
     for proxy in proxy_list:
         print proxy
         try:
@@ -76,8 +69,12 @@ def main():
         except rs.exceptions.Timeout:
             print "Failed"
             continue
-        print soup.h1.text
-        print "Success"
+        if soup.title.text.strip() == u'百度一下，你就知道':
+            print "Success"
+        else:
+            print "Failed"
+        success_times += 1
+    print success_times
 
 if __name__ == "__main__":
     main()
