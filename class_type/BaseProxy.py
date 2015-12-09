@@ -44,7 +44,10 @@ class BaseProxy(object):
 
         """
         for i in xrange(len(content_list)):
-            self.data_dict[self.key_words[i]] = content_list[i]
+            self.data_dict[self.key_words[2+i]] = content_list[i]
+        self.data_dict['hash'] = self.data_dict[
+            'ip'] + ':' + self.data_dict['port']
+        self.check()
 
     def check(self):
         """Check whether proxy server is usable.
