@@ -13,7 +13,7 @@ class DoubanbookItem(scrapy.Item):
     title = scrapy.Field()
     # ['作者', '出版社:', '出版年:', '页数:', '定价:', '装帧:', 'ISBN:',
     # '副标题:', '译者', '丛书:', '原作名:']
-    author = scrapy.Field()
+    authors = scrapy.Field()
     press = scrapy.Field()
     year = scrapy.Field()
     pages = scrapy.Field()
