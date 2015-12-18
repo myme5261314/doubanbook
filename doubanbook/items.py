@@ -9,21 +9,30 @@ import scrapy
 
 
 class DoubanbookItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
     book_id = scrapy.Field()
     title = scrapy.Field()
-    subtitle = scrapy.Field()
+    # ['作者', '出版社:', '出版年:', '页数:', '定价:', '装帧:', 'ISBN:',
+    # '副标题:', '译者', '丛书:', '原作名:']
     author = scrapy.Field()
     press = scrapy.Field()
     year = scrapy.Field()
-    month = scrapy.Field()
     pages = scrapy.Field()
     price = scrapy.Field()
     binding = scrapy.Field()
     isbn = scrapy.Field()
-    cover = scrapy.Field()
+    subtitle = scrapy.Field()
+    translator = scrapy.Field()
     series_id = scrapy.Field()
+    origin_name = scrapy.Field()
+
+    image_id = scrapy.Field()
+    limage = scrapy.Field()
+    simage = scrapy.Field()
+
+    rate_num = scrapy.Field()
+    rate_score = scrapy.Field()
+    rate_num = scrapy.Field()
+    rate_num = scrapy.Field()
 
     introduction = scrapy.Field()
     content = scrapy.Field()
