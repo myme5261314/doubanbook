@@ -1,4 +1,5 @@
 *.sw[po]
 *~
 *.pyc
-*/.ropeproject/
+.ropeproject/
+sitemap/
