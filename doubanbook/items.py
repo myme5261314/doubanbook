@@ -20,23 +20,44 @@ class DoubanbookItem(scrapy.Item):
     price = scrapy.Field()
     binding = scrapy.Field()
     isbn = scrapy.Field()
+    csbn = scrapy.Field()
     subtitle = scrapy.Field()
-    translator = scrapy.Field()
+    translators = scrapy.Field()
     series_id = scrapy.Field()
     origin_name = scrapy.Field()
 
     image_id = scrapy.Field()
-    limage = scrapy.Field()
-    simage = scrapy.Field()
+    # limage = scrapy.Field()
+    # simage = scrapy.Field()
 
     rate_num = scrapy.Field()
     rate_score = scrapy.Field()
-    rate_num = scrapy.Field()
-    rate_num = scrapy.Field()
+    rate_star = scrapy.Field()
 
-    introduction = scrapy.Field()
+    intro = scrapy.Field()
+    author_intro = scrapy.Field()
     content = scrapy.Field()
-    tags = scrapy.Field()
+    tags_num = scrapy.Field()
+    tags_list = scrapy.Field()
+
+    user_like_also = scrapy.Field()
+
+    comments_num = scrapy.Field()
+    reviews_num = scrapy.Field()
+    annotations_num = scrapy.Field()
+
+    has_discussion = scrapy.Field()
+
+    borrow_list = scrapy.Field()
+
+    versions_num = scrapy.Field()
+    works_id = scrapy.Field()
+
+    in_doulist = scrapy.Field()
+
+    num_reading = scrapy.Field()
+    num_read = scrapy.Field()
+    num_want_read = scrapy.Field()
 
 
 class CommentItem(scrapy.Item):
