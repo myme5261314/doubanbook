@@ -22,6 +22,7 @@ class SeriesSpider(RedisSpider):
             _ = -1
         series["series_id"] = int(num_re.search(
             response.url.split("/")[_]).group(0))
+        r.srem("series:set", series["series_id"])
         content = response.xpath("//div[@id='content']")
         series["series_name"] = content.xpath("h1/text()").extract()[0]
         series["book_num"] = int(content.xpath(
@@ -34,8 +35,11 @@ class SeriesSpider(RedisSpider):
         )
         contri_list = content.xpath("//div[@class='aside']/a/@href").extract()
         series["contribute_list"] = [_.split("/")[-2] for _ in contri_list]
+        _people_base_url = "http://www.douban.com/people/%s"
         for _people in series["contribute_list"]:
-            r.lpush("people:start_urls", str(_people))
+            if not r.sismember("people:set", _people):
+                r.sadd("people:set", _people)
+                r.rpush("people:start_urls", _people_base_url % _people)
         book_list = content.xpath(
             "//div[@class='article']//ul[@class='subject-list']/" +
             "li[@class='subject-item']//div[@class='info']/h2/a/@href"
@@ -50,8 +54,11 @@ class SeriesSpider(RedisSpider):
                 meta={"series": series})]
         else:
             series["book_list"][:] = [int(_.split("/")[-2]) for _ in book_list]
+            _book_base_url = "http://book.douban.com/subject/%d"
             for _book in series["book_list"]:
-                r.lpush("subject:start_urls", str(_book))
+                if not r.sismember("book:set", _book):
+                    r.sadd("book:set", _book)
+                    r.rpush("book:start_urls", _book_base_url % _book)
             return series
 
     def parse_extra_page(self, response):
@@ -79,5 +86,7 @@ class SeriesSpider(RedisSpider):
                 meta={"series": _series})]
         else:
             for _book in _series["book_list"]:
-                r.lpush("subject:start_urls", str(_book))
+                if not r.sismember("book:set", _book):
+                    r.sadd("book:set", _book)
+                    r.rpush("book:start_urls", _book_base_url % _book)
             return _series
