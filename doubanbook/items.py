@@ -58,6 +58,8 @@ class DoubanbookItem(scrapy.Item):
     num_read = scrapy.Field()
     num_want_read = scrapy.Field()
 
+    num_second_hand = scrapy.Field()
+
 
 class SeriesItem(scrapy.Item):
     series_id = scrapy.Field()

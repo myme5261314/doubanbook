@@ -67,6 +67,7 @@ class BookSpider(RedisSpider):
         self.parse_versions(book, response)
         self.parse_in_doulist(book, response)
         self.parse_num_read(book, response)
+        self.parse_secondhand_offer(book, response)
 
     def parse_info(self, book, response):
         """help parse info div in the page.
@@ -391,3 +392,20 @@ class BookSpider(RedisSpider):
             book["num_reading"] = 0
             book["num_read"] = 0
             book["num_want_read"] = 0
+
+    def parse_secondhand_offer(self, book, response):
+        """help parse second hand section.
+
+        :book: TODO
+        :response: TODO
+        :returns: TODO
+
+        """
+        offers = response.xpath("//div[@class='indent' and not(@id)]" +
+                                "//ul[@class='bs']/li/a[@class=' ']/")
+        if offers is not []:
+            book["num_second_hand"] = int(
+                number_re.search(offers.xpath("text()").extract()[0]).group(1))
+            if not r.sismember("offers:set", book["book_id"]):
+                r.sadd("offers:set", book["book_id"])
+                r.rpush("offers:start_urls", response.url + "/offers")
