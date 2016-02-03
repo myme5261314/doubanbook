@@ -31,6 +31,7 @@ class BookSpider(RedisSpider):
         book = DoubanbookItem()
         book["book_id"] = int(url_bookid.search(response.url).group(1))
         # book["book_id"] = int(response.url.split("/")[-1])
+        r.srem("book:set", book["book_id"])
         book["title"] = response.xpath(
             "//h1/span/text()").extract()[0]
         self.parse_article(book, response.xpath("//div[@class='article']"))
@@ -82,7 +83,11 @@ class BookSpider(RedisSpider):
             book["series_id"] = -1
         else:
             book["series_id"] = int(book["series_id"][0].split("/")[-1])
-            r.lpush("series:start_urls", str(book["series_id"]))
+            if not r.sismember("series:set", book["series_id"]):
+                series_base_url = "http://book.douban.com/series/%d"
+                r.sadd("series:set", book["series_id"])
+                r.rpush("series:start_urls", series_base_url %
+                        book["series_id"])
         label_list = response.xpath(
             "span[@class='pl']/text()").extract()
         label_list = [label.strip()
@@ -236,7 +241,9 @@ class BookSpider(RedisSpider):
         if len(comments_num) != 0:
             book["comments_num"] = int(
                 number_re.search(comments_num[0]).group(1))
-            r.lpush("comments:start_urls", str(book["book_id"]))
+            if not r.sismember("collections:set", book["book_id"]):
+                r.sadd("comments:set", book["book_id"])
+                r.rpush("comments:start_urls", response.url + "/comments")
         else:
             book["comments_num"] = 0
 
@@ -253,7 +260,9 @@ class BookSpider(RedisSpider):
             "span[@property='v:count']/text()").extract()
         if len(reviews_num) != 0:
             book["reviews_num"] = int(reviews_num[0])
-            r.lpush("reviews:start_url", str(book["book_id"]))
+            if not r.sismember("reviews:set", book["book_id"]):
+                r.sadd("reviews:set", book["book_id"])
+                r.rpush("reviews:start_urls", response.url + "/reviews")
         else:
             book["reviews_num"] = 0
 
@@ -271,7 +280,9 @@ class BookSpider(RedisSpider):
         ).extract()
         if len(annotations_num) != 0:
             book["annotations_num"] = int(annotations_num[0])
-            r.lpush("annotations:start_url", str(book["book_id"]))
+            if not r.sismember("annotations:set", book["book_id"]):
+                r.sadd("annotations:set", book["book_id"])
+                r.rpush("annotations:start_url", response.url + "/annotations")
         else:
             book["annotations_num"] = 0
 
@@ -287,7 +298,9 @@ class BookSpider(RedisSpider):
             "//*[@id='db-discussion-section']/p/a").extract()
         if len(has_discussion) != 0:
             book["has_discussion"] = True
-            r.lpush("discussion:start_urls", book["series_id"])
+            if not r.sismember("discussion:set", book["book_id"]):
+                r.sadd("discussion:set", book["book_id"])
+                r.rpush("discussion:start_urls", response.url + "/annotations")
         else:
             book["has_discussion"] = False
 
@@ -300,7 +313,9 @@ class BookSpider(RedisSpider):
 
         """
         if len(response.xpath("div[@id='buyinfo-printed']")) != 0:
-            r.lpush("buyinfo:start_urls", str(book["book_id"]))
+            if not r.sismember("buyinfo:set", book["book_id"]):
+                r.sadd("buyinfo:set", book["book_id"])
+                r.rpush("buyinfo:start_urls", response.url + "/buylinks")
 
     def parse_borrow_list(self, book, response):
         """help parse borrow_list div part of page.
@@ -344,7 +359,9 @@ class BookSpider(RedisSpider):
             "h2/span[@class='pl']/a[contains(@href, 'doulist')]")
         if len(doulist) != 0:
             book["in_doulist"] = True
-            r.lpush("book_doulist:start_urls", book["book_id"])
+            if not r.sismember("book_doulists:set", book["book_id"]):
+                r.sadd("book_doulists:set", book["book_id"])
+                r.rpush("book_doulists:start_urls", response.url + "/doulists")
         else:
             book["in_doulist"] = False
 
