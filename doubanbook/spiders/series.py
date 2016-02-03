@@ -6,7 +6,7 @@ import redis
 import re
 
 
-r = redis.Redis(host='localhost', port=6379, db=0)
+r = redis.Redis(host="localhost", port=6379, db=0)
 num_re = re.compile("^[\d]+")
 
 
