@@ -109,22 +109,24 @@ class BookSpider(RedisSpider):
                 [u"目前无人评价"]:
             book["rate_num"] = 0
             book["rate_score"] = 0
-        elif response.xpath(
-            "//div[@class='rating_sum']/span/a[@href='collections']/text()"
-        ).extract()[0].strip() == u"评价人数不足":
-            book["rate_num"] = 0
-            book["rate_score"] = 0
-            r.lpush("collections:start_urls", str(book["book_id"]))
         else:
-            book["rate_num"] = int(response.xpath(
-                '//span[@property="v:votes"]/text()'
-            ).extract()[0].strip())
-            book["rate_score"] = float(
-                response.xpath(
-                    '//strong/text()'
-                ).extract()[0].strip()
-            )
-            r.lpush("collections:start_urls", book["book_id"])
+            if response.xpath(
+                "//div[@class='rating_sum']/span/a[@href='collections']/text()"
+            ).extract()[0].strip() == u"评价人数不足":
+                book["rate_num"] = 0
+                book["rate_score"] = 0
+            else:
+                book["rate_num"] = int(response.xpath(
+                    '//span[@property="v:votes"]/text()'
+                ).extract()[0].strip())
+                book["rate_score"] = float(
+                    response.xpath(
+                        '//strong/text()'
+                    ).extract()[0].strip()
+                )
+            if not r.sismember("collections:set", book["book_id"]):
+                r.sadd("collections:set", book["book_id"])
+                r.rpush("collections:start_urls", response.url + "/collections")
         book["rate_star"] = response.xpath(
             '//span[@class="rating_per"]/text()'
         ).extract()
