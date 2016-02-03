@@ -5,8 +5,8 @@ import redis
 import re
 
 number_re = re.compile("([\d]+)")
-url_bookid = re.compile("http://book.douban.com/subject/([\d]+)")
-url_series = re.compile("http://book.douban.com/series/([\d]+)")
+# url_bookid = re.compile("http://book.douban.com/subject/([\d]+)")
+# url_series = re.compile("http://book.douban.com/series/([\d]+)")
 image_id = re.compile("http://img[\d]+.douban.com/lpic/s([\d]+).jpg")
 info_trans = {
     u"出版社:": "press",
@@ -29,7 +29,7 @@ class BookSpider(RedisSpider):
 
     def parse(self, response):
         book = DoubanbookItem()
-        book["book_id"] = int(url_bookid.search(response.url).group(1))
+        book["book_id"] = int(number_re.search(response.url).group(1))
         # book["book_id"] = int(response.url.split("/")[-1])
         r.srem("book:set", book["book_id"])
         book["title"] = response.xpath(
