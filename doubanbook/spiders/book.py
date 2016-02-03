@@ -339,12 +339,13 @@ class BookSpider(RedisSpider):
         versions = response.xpath(
             "h2/span[@class='pl']/a[contains(@href, 'works')]")
         if len(versions) != 0:
-            book["versions_num"] = int(number_re.search(
-                versions.xpath("text()").extract()[0]).group(1))
             book["works_id"] = int(number_re.search(
                 versions.xpath("@href").extract()[0]).group(1))
+            if not r.sismember("works:set", book["works_id"]):
+                works_base_url = "http://book.douban.com/works/%d"
+                r.sadd("works:set", book["works_id"])
+                r.rpush("works:start_urls", works_base_url % book["works_id"])
         else:
-            book["versions_num"] = 0
             book["works_id"] = -1
 
     def parse_in_doulist(self, book, response):

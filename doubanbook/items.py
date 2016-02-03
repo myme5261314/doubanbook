@@ -50,7 +50,6 @@ class DoubanbookItem(scrapy.Item):
 
     borrow_list = scrapy.Field()
 
-    versions_num = scrapy.Field()
     works_id = scrapy.Field()
 
     in_doulist = scrapy.Field()
