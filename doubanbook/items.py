@@ -60,6 +60,15 @@ class DoubanbookItem(scrapy.Item):
     num_want_read = scrapy.Field()
 
 
+class SeriesItem(scrapy.Item):
+    series_id = scrapy.Field()
+    series_name = scrapy.Field()
+    book_num = scrapy.Field()
+    book_list = scrapy.Field()
+    recommend_num = scrapy.Field()
+    contribute_list = scrapy.Field()
+
+
 class CommentItem(scrapy.Item):
     # Use this item to sotre one comment entry to certain book.
     comment_id = scrapy.Field()
