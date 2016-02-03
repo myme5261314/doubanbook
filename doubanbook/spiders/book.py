@@ -379,6 +379,14 @@ class BookSpider(RedisSpider):
             book["num_reading"] = int(number_re.search(num_read[0]).group(1))
             book["num_read"] = int(number_re.search(num_read[1]).group(1))
             book["num_want_read"] = int(number_re.search(num_read[2]).group(1))
+            if book["num_reading"] > 0:
+                if not r.sismember("doings:set", book["book_id"]):
+                    r.sadd("doings:set", book["book_id"])
+                    r.rpush("doings:start_urls", response.url + "/doings")
+            if book["num_want_read"] > 0:
+                if not r.sismember("wishes:set", book["book_id"]):
+                    r.sadd("wishes:set", book["book_id"])
+                    r.rpush("wishes:start_urls", response.url + "/wishes")
         else:
             book["num_reading"] = 0
             book["num_read"] = 0
