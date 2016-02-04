@@ -85,6 +85,7 @@ class SeriesSpider(RedisSpider):
                 _baseurl % (_idx + 1), callback=self.parse_extra_page,
                 meta={"series": _series})]
         else:
+            _book_base_url = "http://book.douban.com/subject/%d"
             for _book in _series["book_list"]:
                 if not r.sismember("book:set", _book):
                     r.sadd("book:set", _book)
