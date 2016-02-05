@@ -115,8 +115,10 @@ class BookSpider(RedisSpider):
         :returns: TODO
 
         """
-        if interest_content.xpath("//span[@class='color_gray']").extract() ==\
-                [u"目前无人评价"]:
+        if len(
+            interest_content.xpath(
+                "//span[@class='color_gray']/text()").extract()
+        ) > 0:
             book["rate_num"] = 0
             book["rate_score"] = 0
         else:
