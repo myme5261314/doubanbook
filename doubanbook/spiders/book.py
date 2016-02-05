@@ -410,7 +410,7 @@ class BookSpider(RedisSpider):
         offers = secondhand_content.xpath(
             "//div[@class='indent' and not(@id)]" +
             "//ul[@class='bs']/li/a[@class=' ']")
-        if offers is not []:
+        if len(offers) > 0:
             book["num_second_hand"] = int(
                 number_re.search(offers.xpath("text()").extract()[0]).group(1))
             if not r.sismember("offers:set", book["book_id"]):
