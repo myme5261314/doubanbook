@@ -16,13 +16,13 @@ NEWSPIDER_MODULE = 'doubanbook.spiders'
 
 # Scrapy-redis configuration
 # Enables scheduling storing requests queue in redis.
-SCHEDULER = "scrapy_redis.scheduler.Scheduler"
+# SCHEDULER = "scrapy_redis.scheduler.Scheduler"
 
 # Don't cleanup redis queues, allows to pause/resume crawls.
-SCHEDULER_PERSIST = True
+# SCHEDULER_PERSIST = True
 
 # Schedule requests using a priority queue. (default)
-SCHEDULER_QUEUE_CLASS = 'scrapy_redis.queue.SpiderPriorityQueue'
+# SCHEDULER_QUEUE_CLASS = 'scrapy_redis.queue.SpiderPriorityQueue'
 
 # Schedule requests using a queue (FIFO).
 # SCHEDULER_QUEUE_CLASS = 'scrapy_redis.queue.SpiderQueue'
@@ -42,8 +42,8 @@ SCHEDULER_QUEUE_CLASS = 'scrapy_redis.queue.SpiderPriorityQueue'
 # }
 
 # Specify the host and port to use when connecting to Redis (optional).
-REDIS_HOST = 'localhost'
-REDIS_PORT = 6379
+# REDIS_HOST = 'localhost'
+# REDIS_PORT = 6379
 
 # Specify the full Redis URL for connecting (optional).
 # If set, this takes precedence over the REDIS_HOST and REDIS_PORT settings.
